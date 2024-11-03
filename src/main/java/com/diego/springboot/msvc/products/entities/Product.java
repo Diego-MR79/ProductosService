@@ -1,72 +1,70 @@
 package com.diego.springboot.msvc.products.entities;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "products")
+@Table(name = "producto")
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "idProducto") // Asegúrate de que esto coincida con la columna de la base de datos
+    private long idProducto;
 
-    private String name;
+    @Column(name = "nombreProducto")
+    private String nombreProducto;
 
-    private Double price;
-    
-    @Column(name = "create_at")
-    private LocalDate createAt;
+    @Column(name = "precioProducto")
+    private Double precioProducto;
 
-    @Transient
-    private int port;
+    @Column(name = "categoriaProducto")
+    private String categoriaProducto;
 
-    public Long getId() {
-        return id;
+    @Column(name = "imagenProducto")
+    private String imagenProducto;
+
+    // Getters y Setters
+    public long getIdProducto() {
+        return idProducto;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdProducto(long idProducto) {
+        this.idProducto = idProducto;
     }
 
-    public String getName() {
-        return name;
+    public String getNombreProducto() {
+        return nombreProducto;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
-    public Double getPrice() {
-        return price;
+    public double getPrecioProducto() {
+        return precioProducto;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setPrecioProducto(double precioProducto) {
+        this.precioProducto = precioProducto;
     }
 
-    public LocalDate getCreateAt() {
-        return createAt;
+    public String getCategoriaProducto() {
+        return categoriaProducto;
     }
 
-    public void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
+    public void setCategoriaProducto(String categoriaProducto) {
+        this.categoriaProducto = categoriaProducto;
     }
 
-    public int getPort() {
-        return port;
+    public String getImagenProducto() {
+        return imagenProducto;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public void setImagenProducto(String imagenProducto) {
+        this.imagenProducto = imagenProducto;
     }
-
-    
 }
