@@ -1,20 +1,34 @@
 package com.diego.springboot.msvc.products.controllers;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import com.diego.springboot.msvc.products.services.FileUploadService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.diego.springboot.msvc.products.entities.Product;
 import com.diego.springboot.msvc.products.services.ProductService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/producto")
 public class ProductController {
 
     final private ProductService service;
+
+    @Autowired
+    private FileUploadService uploadService;
 
     public ProductController(ProductService service) {
         this.service = service;
@@ -48,5 +62,51 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> upload(@RequestParam("archivo")MultipartFile archivo, @RequestParam("id") Long id) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Product> optionalProduct = service.findById(id);
+
+        if(!archivo.isEmpty() && optionalProduct.isPresent()) {
+            String nombreArchivo = null;
+            Product producto = optionalProduct.get();
+
+            try {
+                nombreArchivo = uploadService.copiar(archivo);
+            } catch (IOException e) {
+                response.put("mensaje", "Ocurrió un error al subir la imágen");
+                response.put("error", e.getMessage());
+                return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            String nombreFotoAnterior = producto.getImagenProducto();
+            uploadService.eliminar(nombreFotoAnterior);
+            producto.setImagenProducto(nombreArchivo);
+            service.save(producto);
+
+            response.put("producto", producto);
+            response.put("mensaje", "Imagén subida correctamente a uploads/" + nombreArchivo);
+        }
+
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/upload/img/{nombreFoto:.+}")
+    public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto) {
+        Resource recurso = null;
+
+        try {
+            recurso = uploadService.cargar(nombreFoto);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpHeaders cabecera = new HttpHeaders();
+        cabecera.add(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE);
+        cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + recurso.getFilename() + "\"");
+
+        return new ResponseEntity<>(recurso, cabecera, HttpStatus.OK);
     }
 }
