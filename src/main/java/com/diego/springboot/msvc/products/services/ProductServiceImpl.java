@@ -15,11 +15,8 @@ import com.diego.springboot.msvc.products.respositories.ProductRepository;
 public class ProductServiceImpl implements ProductService{
 
     final private ProductRepository repository;
-    final private Environment environment;
-
     public ProductServiceImpl(ProductRepository repository, Environment environment){
         this.repository = repository;
-        this.environment = environment;
     }
 
     @Override
@@ -33,7 +30,18 @@ public class ProductServiceImpl implements ProductService{
     public Optional<Product> findById(Long id) {
         return repository.findById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findByName(String nombreProducto) {
+        return repository.findByNombreProducto(nombreProducto);
+    }
     
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findByCategory(String categoriaProducto) {
+        return repository.findByCategoriaProducto(categoriaProducto);
+    }
 
     @Override
     @Transactional

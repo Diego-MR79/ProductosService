@@ -11,6 +11,10 @@ public interface ProductService {
 
     Optional<Product> findById(Long id);
 
+    List<Product> findByName(String nombreProducto);
+
+    List<Product> findByCategory(String categoriaProducto);
+
     Product save(Product product);
 
     void deleteById(Long id);

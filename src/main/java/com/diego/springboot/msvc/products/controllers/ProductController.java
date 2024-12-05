@@ -32,6 +32,24 @@ public class ProductController {
                               .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/nombre/{nombreProducto}")
+    public ResponseEntity<List<Product>> detailsByName(@PathVariable String nombreProducto) {
+        List<Product> products = service.findByName(nombreProducto);
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build(); // 404 si no se encuentran productos
+        }
+        return ResponseEntity.ok(products); // 200 con la lista de productos
+    }
+    
+    @GetMapping("/categoria/{categoriaProducto}")
+    public ResponseEntity<List<Product>> detailsByCategory(@PathVariable String categoriaProducto) {
+        List<Product> products = service.findByCategory(categoriaProducto);
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build(); // 404 si no se encuentran productos
+        }
+        return ResponseEntity.ok(products); // 200 con la lista de productos
+    }
+
     @PostMapping
     public ResponseEntity<Product> create(@RequestBody Product product) {
         Product savedProduct = service.save(product);
