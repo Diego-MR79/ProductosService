@@ -13,7 +13,7 @@ docker build -t products-service .
 Ejecutar contenedor:
 
 ```shell
-docker run --name products-service --network capysoft_network -p 8001:8001 products-service
+docker run --name products-service --network capysoft_network -v ./uploads:/app/uploads -d -p 8001:8001 products-service
 ```
 
 ## Uso

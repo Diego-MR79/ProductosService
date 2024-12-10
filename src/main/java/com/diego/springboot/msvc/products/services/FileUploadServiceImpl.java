@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
-  private final static String DIRECTORIO_UPLOAD = "uploads";
+  private final static String DIRECTORIO_UPLOAD = System.getProperty("user.dir") + "/uploads";
 
   @Override
   public Resource cargar(String nombreFoto) throws MalformedURLException {

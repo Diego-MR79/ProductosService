@@ -4,6 +4,8 @@ WORKDIR /app
 COPY . .
 RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
+RUN mkdir -p /app/uploads
+COPY ./uploads /app/uploads
 
 # Fase 2: Ejecutar la aplicación
 FROM eclipse-temurin:21-jre
